@@ -1,6 +1,8 @@
 # CommissionOnStroke
 Interactive display of maps in the Lancet Neurology paper: Commission on Stroke: The Wind of Change
-This is an interactive display of the maps in the paper submitted to Lancet Neurology. Figure 2 is taken from data in Supplementary Table 1: column titled 'Surveillance'. Click on the map to access interactive version of Figure2.
+This is an interactive display of the maps in the paper submitted to Lancet Neurology. 
+
+Figure 2 is taken from data in Supplementary Table 1: column titled 'Surveillance'. Click on the map to access interactive version of Figure2.
 
 [![: Quintiles of performance by presence of surveillance strategies](./Figure2.png)](./Figure2.html)
 
@@ -16,7 +18,7 @@ Figure 4c is taken from data in Supplementary Table 8: column titled 'Overall Sc
 
 [![: Quintiles of performance by presence of secondary stroke prevention activities](./Figure4c.png)](./Figure4c.html)
 
-Figure 5 is taken from data in Supplementary Table 1: column titled 'Acute'.Click on the map to access interactive version of Figure4b.
+Figure 5 is taken from data in Supplementary Table 1: column titled 'Acute'.Click on the map to access interactive version of Figure5.
 
 [![: Quintiles of performance by presence of acute stroke services](./Figure5.png)](./Figure5.html)
 
