@@ -172,7 +172,7 @@ o=leaflet(world_spdf)%>% addTiles()  %>%
    
   addPolygons( stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = pal(world_spdf@data$Acute),popup = paste("Country=",world_spdf@data$NAME,"Acute=",world_spdf@data$Acute,"Economy=",world_spdf@data$Economy) )
 
-##Figure 5
+##Figure 7
 pal<-colorNumeric(
       palette=c("white","red","yellow","blue"),
       domain = world_spdf@data$Rehabilitation
@@ -213,7 +213,7 @@ pal<-colorNumeric(
 #Surveillance
 
 # Numeric palette
-q=leaflet(world_spdf)%>% addTiles()  %>% 
+r=leaflet(world_spdf)%>% addTiles()  %>% 
   setView( lat=10, lng=0 , zoom=2) %>%
     addLegend(pal=pal, values = world_spdf@data$`Overall Score for Primary Prevention`, opacity = 1,title ="Primary Prevention") %>%
 addPolygons( stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = pal(world_spdf@data$`Overall Score for Primary Prevention`),popup = paste("Country=",world_spdf@data$NAME,"Primary Prevention=",world_spdf@data$`Overall Score for Primary Prevention`) )
@@ -242,16 +242,16 @@ webshot::webshot("Figure2.html","Figure2.png")
 saveWidget(n,file="Figure4a.html")
 webshot::webshot("Figure4a.html","Figure4a.png")
 
-saveWidget(p,file="Figure4b.html")
+saveWidget(q,file="Figure4b.html")
 webshot::webshot("Figure4b.html","Figure4b.png")
 
-saveWidget(q,file="Figure4c.html")
+saveWidget(r,file="Figure4c.html")
 webshot::webshot("Figure4c.html","Figure4c.png")
 
-saveWidget(m,file="Figure5.html")
+saveWidget(o,file="Figure5.html")
 webshot::webshot("Figure5.html","Figure5.png")
 
-saveWidget(m,file="Figure7.html")
+saveWidget(p,file="Figure7.html")
 webshot::webshot("Figure7.html","Figure7.png")
 
 
