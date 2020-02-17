@@ -1,22 +1,21 @@
-<!doctype html>
-<html lang="en">
-    <head>
-<!-- Global site tag (gtag.js) - Google Analytics -->
-  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-100444709-5"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
+<!DOCTYPE html>
+  <html lang="{{ page.lang | default: site.lang | default: "en" }}">
     
-    gtag('config', 'UA-100444709-5');
-    </script>
-
-        <meta charset="UTF-8">
-        <title>{{ page.title }}</title>
-    </head>
-    <body>
-        {{ content }}
+    {%- include head.html -%}
+  
+  <body>
+    
+    {%- include header.html -%}
+  
+  <main class="page-content" aria-label="Content">
+    <div class="wrapper">
+      {{ content }}
+    </div>
+      </main>
+      
+      {%- include footer.html -%}
+    
     </body>
-
-</html>
+      
+      </html>
 
