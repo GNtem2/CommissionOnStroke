@@ -6,6 +6,7 @@ library(leaflet)
 library(sf)
 library(readxl)
 library(leaflet)
+library(htmltools)
 ## ---- HelperFunctions ----
 
 #change name to be consistent with world map
@@ -274,7 +275,7 @@ worldstrokemap1 <-
   addTiles() %>%
   setView(lat=0, lng=0, zoom=2) %>% 
   htmlwidgets::onRender(hooktext) %>% 
-  htmlwidgets::prependContent(googleanalytics)
+  htmlwidgets::prependContent(tags$header(includeScript("analytics.js")))
 
 
 
@@ -360,9 +361,9 @@ worldstrokemap2 <- leaflet(worldborders.fig4) %>%
                    position="topleft",
                    options=layersControlOptions(collapsed=FALSE)) %>% 
   addTiles() %>%
-  setView(lat=0, lng=0, zoom=2) %>% 
+  setView(lat=0, lng=0, zoom=2) %>%
   htmlwidgets::onRender(hooktext) %>% 
-  htmlwidgets::prependContent(googleanalytics)
+  htmlwidgets::prependContent(tags$header(includeScript("analytics.js")))
 
 worldstrokemap2a <- leaflet(worldborders.fig4) %>% 
   addPolygons(stroke=FALSE, 
@@ -397,9 +398,8 @@ worldstrokemap2a <- leaflet(worldborders.fig4) %>%
   addTiles()
 
 ## ---- SaveMaps ----
-
-htmlwidgets::saveWidget(worldstrokemap1, "worldstrokemap1.html")
-htmlwidgets::saveWidget(worldstrokemap2, "worldstrokemap2.html")
+htmlwidgets::saveWidget(worldstrokemap1, "worldstrokemap1.html", title="Commission on Stroke")
+htmlwidgets::saveWidget(worldstrokemap2, "worldstrokemap2.html", title="Commission on Stroke")
 
 ## fewer legends so that webshot works
 htmlwidgets::saveWidget(worldstrokemap1a, "worldstrokemap1a.html")
