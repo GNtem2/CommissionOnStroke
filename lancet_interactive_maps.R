@@ -132,7 +132,7 @@ addLegend_decreasing <- function (map, position = c("topright", "bottomright", "
 
 mkPopup2 <- function(WB){
   wb <- st_set_geometry(WB, NULL)
-  g <- gather(select(wb, NAME, `Overall Score for Primary Prevention`, `Overall Score for Secondary Prevention`, Economy),
+  g <- gather(select(wb, NAME, `Combined Primary/Secondary Prevention Score`, `Overall Score for Primary Prevention`, `Overall Score for Secondary Prevention`, Economy),
               key="Rowname", value="Score", -NAME)
   g <- nest(group_by(g, NAME))
   g <- mutate(g, popup=map2_chr(data, NAME, ~knitr::kable(.x, format="html", col.names=c(.y, ""))))
@@ -142,7 +142,7 @@ mkPopup2 <- function(WB){
 
 mkPopup1 <- function(WB){
   wb <- st_set_geometry(WB, NULL)
-  g <- gather(select(wb, NAME, Surveillance, Acute, Prevention, Rehabilitation, Economy),
+  g <- gather(select(wb, NAME, Surveillance, Acute, Rehabilitation, Economy),
               key="Rowname", value="Score", -NAME)
   g <- nest(group_by(g, NAME))
   g <- mutate(g, popup=map2_chr(data, NAME, ~knitr::kable(.x, format="html", col.names=c(.y, ""))))
@@ -172,6 +172,8 @@ document.querySelectorAll('.legend').forEach(l => {
       this.on('baselayerchange', e => updateLegend());
     }"
 
+googleanalytics <- paste(readLines("analytics.js"), collapse="\n")
+
 ## ---- LoadData ----
 ##############
 #stroke service Figure 2
@@ -191,13 +193,12 @@ TableS8<-mutate(TableS8,
                 
                 
 )
-
+TableS8 <- left_join(TableS8, select(TableS1, Countries, Prevention), by=c("Country"="Countries"))
 worldborders.orig <- st_read("TM_WORLD_BORDERS_SIMPL-0.3.shp")
 worldborders <- left_join(worldborders.orig, TableS1, by=c("NAME"="Countries"))
 
 worldborders <- mutate(worldborders,
                        Surveillance=quintileFactors(Surveillance),
-                       Prevention=quintileFactors(Prevention),
                        Acute=quintileFactors(Acute),
                        Rehabilitation=quintileFactors(Rehabilitation)
 )
@@ -212,6 +213,7 @@ worldborders.fig4 <- left_join(worldborders.orig, TableS8, by=c("NAME"="Country"
 worldborders.fig4 <- left_join(worldborders.fig4, select(TableS1, Countries, Economy), by=c("NAME"="Countries"))
 
 worldborders.fig4 <- mutate(worldborders.fig4,
+                            `Combined Primary/Secondary Prevention Score`=quintileFactors(Prevention),
                             `Overall Score for Primary Prevention`=quintileFactors(`Overall Score for Primary Prevention`),
                             `Overall Score for Secondary Prevention`=quintileFactors(`Overall Score for Secondary Prevention`),
 )
@@ -237,11 +239,6 @@ worldstrokemap1 <-
               popup=~popup,
               group="Acute") %>%
   addPolygons(stroke=FALSE, 
-              fillColor = ~lancetColours(Prevention), 
-              fillOpacity = 0.5,
-              popup=~popup,
-              group="Prevention") %>%
-  addPolygons(stroke=FALSE, 
               fillColor = ~lancetColours(Rehabilitation), 
               fillOpacity = 0.5,
               popup=~popup,
@@ -262,11 +259,6 @@ worldstrokemap1 <-
                        decreasing = TRUE,
                        group="Acute") %>% 
   addLegend_decreasing(pal=lancetColours, 
-                       values=~Prevention, 
-                       na.label = "No data provided", 
-                       decreasing = TRUE,
-                       group="Prevention") %>% 
-  addLegend_decreasing(pal=lancetColours, 
                        values=~Rehabilitation, 
                        na.label = "No data provided", 
                        decreasing = TRUE,
@@ -276,12 +268,14 @@ worldstrokemap1 <-
                        na.label = "No data provided", 
                        decreasing=TRUE,
                        group="Economy") %>% 
-  addLayersControl(baseGroups=c("Surveillance","Acute", "Prevention", "Rehabilitation","Economy"),
+  addLayersControl(baseGroups=c("Surveillance","Acute", "Rehabilitation","Economy"),
                    position="topleft",
                    options=layersControlOptions(collapsed=FALSE)) %>% 
   addTiles() %>%
   setView(lat=0, lng=0, zoom=2) %>% 
-  htmlwidgets::onRender(hooktext)
+  htmlwidgets::onRender(hooktext) %>% 
+  htmlwidgets::prependContent(googleanalytics)
+
 
 
 worldstrokemap1a <- 
@@ -297,11 +291,6 @@ worldstrokemap1a <-
               popup=~popup,
               group="Acute") %>%
   addPolygons(stroke=FALSE, 
-              fillColor = ~lancetColours(Prevention), 
-              fillOpacity = 0.5,
-              popup=~popup,
-              group="Prevention") %>%
-  addPolygons(stroke=FALSE, 
               fillColor = ~lancetColours(Rehabilitation), 
               fillOpacity = 0.5,
               popup=~popup,
@@ -316,7 +305,7 @@ worldstrokemap1a <-
                        na.label = "No data provided", 
                        decreasing = TRUE,
                        group="Surveillance") %>% 
-  addLayersControl(baseGroups=c("Surveillance","Acute", "Prevention", "Rehabilitation","Economy"),
+  addLayersControl(baseGroups=c("Surveillance","Acute", "Rehabilitation","Economy"),
                    position="topleft",
                    options=layersControlOptions(collapsed=FALSE)) %>% 
   setView(lat=0, lng=0, zoom=2) %>% 
@@ -327,6 +316,11 @@ worldstrokemap1a <-
 worldborders.fig4 <- mkPopup2(worldborders.fig4)
 
 worldstrokemap2 <- leaflet(worldborders.fig4) %>% 
+  addPolygons(stroke=FALSE, 
+              fillColor = ~lancetColours(`Combined Primary/Secondary Prevention Score`), 
+              fillOpacity = 0.5,
+              popup=~popup,
+              group="Combined Primary/Secondary Prevention Score") %>%
   addPolygons(stroke=FALSE, 
               fillColor = ~lancetColours(`Overall Score for Primary Prevention`), 
               fillOpacity = 0.5,
@@ -342,6 +336,11 @@ worldstrokemap2 <- leaflet(worldborders.fig4) %>%
               fillOpacity = 0.5,
               popup=~popup,
               group="Economy") %>%
+  addLegend_decreasing(pal=lancetColours, 
+                       values=~`Combined Primary/Secondary Prevention Score`, 
+                       na.label = "No data provided", 
+                       decreasing = TRUE,
+                       group="Combined Primary/Secondary Prevention Score") %>% 
   addLegend_decreasing(pal=lancetColours, 
                        values=~`Overall Score for Primary Prevention`, 
                        na.label = "No data provided", 
@@ -357,14 +356,20 @@ worldstrokemap2 <- leaflet(worldborders.fig4) %>%
                        na.label = "No data provided", 
                        decreasing=TRUE,
                        group="Economy") %>% 
-  addLayersControl(baseGroups=c("Overall Score for Primary Prevention", "Overall Score for Secondary Prevention", "Economy"),
+  addLayersControl(baseGroups=c("Combined Primary/Secondary Prevention Score", "Overall Score for Primary Prevention", "Overall Score for Secondary Prevention", "Economy"),
                    position="topleft",
                    options=layersControlOptions(collapsed=FALSE)) %>% 
   addTiles() %>%
   setView(lat=0, lng=0, zoom=2) %>% 
-  htmlwidgets::onRender(hooktext)
+  htmlwidgets::onRender(hooktext) %>% 
+  htmlwidgets::prependContent(googleanalytics)
 
 worldstrokemap2a <- leaflet(worldborders.fig4) %>% 
+  addPolygons(stroke=FALSE, 
+              fillColor = ~lancetColours(`Combined Primary/Secondary Prevention Score`),
+              fillOpacity = 0.5,
+              popup=~popup,
+              group="Combined Primary/Secondary Prevention Score") %>%
   addPolygons(stroke=FALSE, 
               fillColor = ~lancetColours(`Overall Score for Primary Prevention`), 
               fillOpacity = 0.5,
@@ -381,11 +386,11 @@ worldstrokemap2a <- leaflet(worldborders.fig4) %>%
               popup=~popup,
               group="Economy") %>%
   addLegend_decreasing(pal=lancetColours, 
-                       values=~`Overall Score for Primary Prevention`, 
+                       values=~`Combined Primary/Secondary Prevention Score`, 
                        na.label = "No data provided", 
                        decreasing = TRUE,
-                       group="Overall Score for Primary Prevention") %>% 
-  addLayersControl(baseGroups=c("Overall Score for Primary Prevention", "Overall Score for Secondary Prevention", "Economy"),
+                       group="Combined Primary/Secondary Prevention Score") %>% 
+  addLayersControl(baseGroups=c("Combined Primary/Secondary Prevention Score", "Overall Score for Primary Prevention", "Overall Score for Secondary Prevention", "Economy"),
                    position="topleft",
                    options=layersControlOptions(collapsed=FALSE)) %>% 
   setView(lat=0, lng=0, zoom=2) %>% 
