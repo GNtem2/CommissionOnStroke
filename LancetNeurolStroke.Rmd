@@ -19,9 +19,6 @@ knitr::read_chunk("lancet_interactive_maps.R")
 ```{r LoadData, warning=FALSE, message=FALSE, echo=FALSE, results='hide'}
 
 ```
-```{r FixCountryNames, warning=FALSE, message=FALSE, echo=FALSE, results='hide'}
-
-```
 ```{r Map1, warning=FALSE, message=FALSE, echo=FALSE, results='hide', cache=TRUE}
 
 ```
