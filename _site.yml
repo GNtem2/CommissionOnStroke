@@ -1,0 +1,7 @@
+name: "Commission on Stroke"
+output_dir: "."
+output:
+  html_document:
+    include:
+      after_body: footer.html
+      
