@@ -1,6 +1,8 @@
 ---
+
 title: Commission on Stroke
 layout: default
+
 ---
 
 # Commission on Stroke
