@@ -1,27 +1,15 @@
-# CommissionOnStroke
-Interactive display of maps in the Lancet Neurology paper: Commission on Stroke: The Wind of Change.
-This is an interactive display (https://gntem2.github.io/CommissionOnStroke/) of the maps in the paper submitted to Lancet Neurology. 
 
-Figure 2 is taken from data in Supplementary Table 1: column titled 'Surveillance'. Click on the map to access interactive version of Figure2.
+# Comission on Stroke
 
-[![: Quintiles of performance by presence of surveillance strategies](./Figure2.png)](./Figure2.html)
+Interactive display of maps and data presented in the Lancet Neurology paper: Commission on Stroke: The Wind of Change. This is an interactive display (https://gntem2.github.io/CommissionOnStroke/) of the maps in the paper submitted to Lancet Neurology.
 
-Figure 4a is taken from data in Supplementary Table 1: column titled 'Prevention'.Click on the map to access interactive version of Figure4a.
+Click on the images for interactive versions of the maps.
 
-[![: Quintiles of performance by presence of stroke prevention strategies](./Figure4a.png)](./Figure4a.html)
+# [Stroke surveillance, acute services, rehabilitation services and prevention](./worldstrokemap1.html)
 
-Figure 4b is taken from data in Supplementary Table 8: column titled 'Overall Score for Primary Prevention'.Click on the map to access interactive version of Figure4b.
+[![Surveillance, acute services, etc](./wsm1.png)](./worldstrokemap1.html)
 
-[![: Quintiles of performance by presence of primary stroke prevention activities](./Figure4b.png)](./Figure4b.html)
+# [Stroke prevention](./worldstrokemap2.html)
 
-Figure 4c is taken from data in Supplementary Table 8: column titled 'Overall Score for Secondary Prevention'.Click on the map to access interactive version of Figure4c.
+[![Prevention strategies](./wsm2.png)](./worldstrokemap2.html)
 
-[![: Quintiles of performance by presence of secondary stroke prevention activities](./Figure4c.png)](./Figure4c.html)
-
-Figure 5 is taken from data in Supplementary Table 1: column titled 'Acute'.Click on the map to access interactive version of Figure5.
-
-[![: Quintiles of performance by presence of acute stroke services](./Figure5.png)](./Figure5.html)
-
-Figure 7 is taken from data in Supplementary Table 1: column titled 'Rehabilitation'.Click on the map to access interactive version of Figure7.
-
-[![: Quintiles of performance by presence of rehabilitation services](./Figure7.png)](./Figure7.html)
