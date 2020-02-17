@@ -195,6 +195,11 @@ TableS8<-mutate(TableS8,
                 
 )
 TableS8 <- left_join(TableS8, select(TableS1, Countries, Prevention), by=c("Country"="Countries"))
+
+TableS1 <- mutate(TableS1, Countries = fixCountries(Countries))
+TableS8 <- mutate(TableS8, Country = fixCountries(Country))
+
+
 worldborders.orig <- st_read("TM_WORLD_BORDERS_SIMPL-0.3.shp")
 worldborders <- left_join(worldborders.orig, TableS1, by=c("NAME"="Countries"))
 
@@ -218,10 +223,6 @@ worldborders.fig4 <- mutate(worldborders.fig4,
                             `Overall Score for Primary Prevention`=quintileFactors(`Overall Score for Primary Prevention`),
                             `Overall Score for Secondary Prevention`=quintileFactors(`Overall Score for Secondary Prevention`),
 )
-
-## ---- FixCountryNames ----
-TableS1 <- mutate(TableS1, Countries = fixCountries(Countries))
-TableS8 <- mutate(TableS8, Country = fixCountries(Country))
 
 ## ---- Map1 ----
 
