@@ -1,270 +1,47 @@
 ---
 title: "LancetNeurolStroke"
-author: "gntem2"
+author: "Author List"
 date: "13/02/2020"
 output: html_document
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::read_chunk("lancet_interactive_maps.R")
 ```
-
-## R Markdown
-
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
-
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r data, echo=FALSE}
-#clear working directory
-
-rm(list=ls())
-
-#load libraries
-library(dplyr)
-library(tidyr)
-library(purrr)
-library(leaflet)
-#library(sf)
-#library(tmap)
-library(readxl)
-library(stringr)
-library(rgdal)
-
-##############
-#stroke service Figure 2
-TableS1<-read_xlsx("acutecareservice.xlsx",sheet = 1)
-TableS1<-mutate(TableS1,
-          Surveillance=as.numeric(Surveillance),
-          Prevention=as.numeric(Prevention),
-          Acute=as.numeric(Acute),
-          Rehabilitation=as.numeric(Rehabilitation))
-
-#stroke prevention Figure 4
-TableS8<-read_xlsx("acutecareservice.xlsx",sheet = 3)
-TableS8<-mutate(TableS8,
-  `Overall Score for Primary Prevention`= as.numeric(`Overall Score for Primary Prevention`),
-  `Overall Score for Secondary Prevention`=as.numeric(`Overall Score for Secondary Prevention`)
-  
-               
-)
-
-```
-##Table S1 contains data for Figure 2, 4a, 5, 7
-```{r map merge Figure 2, echo=FALSE}
-#change name to be consistent with world map
-
-TableS1$Countries <- str_replace(TableS1$Countries,"USA","United States") %>%
-    str_replace("Great Britain","United Kingdom") %>%
-    str_replace("Moldova","Republic of Moldova") %>%
-    str_replace("Macedonia","The former Yugoslav Republic of Macedonia") %>%
-    str_replace("South Korea","Korea, Republic of") %>%
-    str_replace("North Korea","Korea, Democratic People's Republic of") %>%
-    #str_replace("Taiwan \\(province of China\\)","Taiwan") %>%
-    str_replace("Laos","Lao People's Democratic Republic") %>%
-    str_replace("Vietnam","Viet Nam") %>%
-    str_replace("Syria","Syrian Arab Republic") %>%
-    str_replace("Iran","Iran (Islamic Republic of)") %>%
-  str_replace("Western sub-Saharan Africa","Western Sahara") %>%
-  str_replace("Congo \\(Brazzaville\\)","Congo") %>%
-  str_replace("Democratic Republic of the\r\nCongo","Democratic Republic of the Congo") %>%
-  str_replace("C?te d'Ivoire","Cote d'Ivoire") %>%
-    str_replace("Tanzania","United Republic of Tanzania") %>%
-    str_replace("Libya","Libyan Arab Jamahiriya")
-
-```
-#TableS8=Figure4bc
-
-```{r map merge Figure 4,echo=FALSE}
-#change name to be consistent with world map
-
-TableS8$Country <- str_replace(TableS8$Country,"USA","United States") %>%
-    str_replace("Great Britain","United Kingdom") %>%
-    str_replace("Moldova","Republic of Moldova") %>%
-    str_replace("Macedonia","The former Yugoslav Republic of Macedonia") %>%
-    str_replace("South Korea","Korea, Republic of") %>%
-    str_replace("North Korea","Korea, Democratic People's Republic of") %>%
-    #str_replace("Taiwan \\(province of China\\)","Taiwan") %>%
-    str_replace("Laos","Lao People's Democratic Republic") %>%
-    str_replace("Vietnam","Viet Nam") %>%
-    str_replace("Syria","Syrian Arab Republic") %>%
-    str_replace("Iran","Iran (Islamic Republic of)") %>%
-  str_replace("Western sub-Saharan Africa","Western Sahara") %>%
-  str_replace("Congo \\(Brazzaville\\)","Congo") %>%
-  str_replace("Democratic Republic of the\r\nCongo","Democratic Republic of the Congo") %>%
-  str_replace("C?te d'Ivoire","Cote d'Ivoire") %>%
-    str_replace("Tanzania","United Republic of Tanzania") %>%
-    str_replace("Libya","Libyan Arab Jamahiriya")
+```{r LoadLibraries, warning=FALSE, message=FALSE, echo=FALSE, results='hide'}
 
 ```
 
-
-
-#Figure 2 map from table S1
-
-```{r map, echo=FALSE}
-#open world map
-# Read the file with the rgdal library in R
-#library(rgdal)
-world_spdf=readOGR( dsn= getwd() , layer="TM_WORLD_BORDERS_SIMPL-0.3")
-
-#merge files
-world_spdf@data<-left_join(world_spdf@data,TableS1,by=c("NAME"="Countries"))
-
-
-##############
-#this statement does not work for removing NA
-#world_spdf@data$Surveillance[world_spdf@data$Surveillance=="NA"]<-0
-
-#change tactic using base R to remove NA
-naIndex<-which(is.na(world_spdf@data$Surveillance))
-world_spdf@data[naIndex,]$Surveillance<-0
-
-naIndex<-which(is.na(world_spdf@data$Prevention))
-world_spdf@data[naIndex,]$Prevention<-0
-
-naIndex<-which(is.na(world_spdf@data$Acute))
-world_spdf@data[naIndex,]$Acute<-0
-
-naIndex<-which(is.na(world_spdf@data$Rehabilitation))
-world_spdf@data[naIndex,]$Rehabilitation<-0
-
-##############
-pal<-colorNumeric(
-      palette=c("white","red","yellow","blue"),
-      domain = world_spdf@data$Surveillance
-      )
-
-#colnames(world_spdf@data[12])
-#Surveillance
-
-# Numeric palette
-m=leaflet(world_spdf)%>% addTiles()  %>% 
-  setView( lat=10, lng=0 , zoom=2) %>%
-    addLegend(pal=pal, values = world_spdf@data$Surveillance, opacity = 1,title ="Epi Surv") %>%
-    
-  addPolygons( stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = pal(world_spdf@data$Surveillance),popup = paste("Country=",world_spdf@data$NAME,"Surveillance=",world_spdf@data$Surveillance,"Economy=",world_spdf@data$Economy)) 
-
-
-##Figure 4a
-
-pal<-colorNumeric(
-      palette=c("white","red","yellow","blue"),
-      domain = world_spdf@data$Prevention
-      )
-
-n=leaflet(world_spdf)%>% addTiles()  %>% 
-  setView( lat=10, lng=0 , zoom=2) %>%
-    addLegend(pal=pal, values = world_spdf@data$Prevention, opacity = 1,title ="Primary & Secondary Prevention") %>%
-   
-  addPolygons( stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = pal(world_spdf@data$Prevention),popup = paste("Country=",world_spdf@data$NAME,"Primary & Secondary Prevention =",world_spdf@data$Prevention,"Economy=",world_spdf@data$Economy) )
-
-##Figure 5
-
-pal<-colorNumeric(
-      palette=c("white","red","yellow","blue"),
-      domain = world_spdf@data$Acute
-      )
-
-o=leaflet(world_spdf)%>% addTiles()  %>% 
-  setView( lat=10, lng=0 , zoom=2) %>%
-    addLegend(pal=pal, values = world_spdf@data$Acute, opacity = 1,title ="Acute") %>%
-   
-  addPolygons( stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = pal(world_spdf@data$Acute),popup = paste("Country=",world_spdf@data$NAME,"Acute=",world_spdf@data$Acute,"Economy=",world_spdf@data$Economy) )
-
-##Figure 7
-pal<-colorNumeric(
-      palette=c("white","red","yellow","blue"),
-      domain = world_spdf@data$Rehabilitation
-      )
-
-p=leaflet(world_spdf)%>% addTiles()  %>% 
-  setView( lat=10, lng=0 , zoom=2) %>%
-    addLegend(pal=pal, values = world_spdf@data$Rehabilitation, opacity = 1,title ="Rehabilitation") %>%
-   
-  addPolygons( stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = pal(world_spdf@data$Rehabilitation),popup = paste("Country=",world_spdf@data$NAME,"Rehabilitation=",world_spdf@data$Rehabilitation,"Economy=",world_spdf@data$Economy))
-
+```{r HelperFunctions, warning=FALSE, message=FALSE, echo=FALSE, results='hide'}
 
 ```
-#Figure 4 bc map from tabl s8
-```{r Figure 4a,echo=FALSE}
-#open world map
-# Read the file with the rgdal library in R
-#library(rgdal)
-world_spdf=readOGR( dsn= getwd() , layer="TM_WORLD_BORDERS_SIMPL-0.3")
+```{r LoadData, warning=FALSE, message=FALSE, echo=FALSE, results='hide'}
 
-#merge files
-world_spdf@data<-left_join(world_spdf@data,TableS8,by=c("NAME"="Country"))
+```
+```{r FixCountryNames, warning=FALSE, message=FALSE, echo=FALSE, results='hide'}
 
-#change tactic using base R
-naIndex<-which(is.na(world_spdf@data$`Overall Score for Primary Prevention`))
-world_spdf@data[naIndex,]$`Overall Score for Primary Prevention`<-0
+```
+```{r Map1, warning=FALSE, message=FALSE, echo=FALSE, results='hide', cache=TRUE}
 
-naIndex<-which(is.na(world_spdf@data$`Overall Score for Secondary Prevention`))
-world_spdf@data[naIndex,]$`Overall Score for Secondary Prevention`<-0
+```
+```{r Map2, warning=FALSE, message=FALSE, echo=FALSE, results='hide', cache=TRUE}
 
-##########
-pal<-colorNumeric(
-      palette=c("white","red","yellow","blue"),
-      domain = world_spdf@data$`Overall Score for Primary Prevention`
-      )
-
-#colnames(world_spdf@data[12])
-#Surveillance
-
-# Numeric palette
-r=leaflet(world_spdf)%>% addTiles()  %>% 
-  setView( lat=10, lng=0 , zoom=2) %>%
-    addLegend(pal=pal, values = world_spdf@data$`Overall Score for Primary Prevention`, opacity = 1,title ="Primary Prevention") %>%
-addPolygons( stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = pal(world_spdf@data$`Overall Score for Primary Prevention`),popup = paste("Country=",world_spdf@data$NAME,"Primary Prevention=",world_spdf@data$`Overall Score for Primary Prevention`) )
-
-#
-
-
-pal<-colorNumeric(
-      palette=c("white","red","yellow","blue"),
-      domain = world_spdf@data$`Overall Score for Secondary Prevention`
-      )
-q=leaflet(world_spdf)%>% addTiles()  %>% 
-  setView( lat=10, lng=0 , zoom=2) %>%
-    addLegend(pal=pal, values = world_spdf@data$`Overall Score for Secondary Prevention`, opacity = 1,title ="Secondary Prevention") %>%
-addPolygons( stroke = FALSE, fillOpacity = 0.5, smoothFactor = 0.5, color = pal(world_spdf@data$`Overall Score for Secondary Prevention`),popup = paste("Country=",world_spdf@data$NAME,"Secondary Prevention=",world_spdf@data$`Overall Score for Secondary Prevention`) )
+```
+```{r, SaveMaps, warning=FALSE, message=FALSE, echo=FALSE, results='hide', cache=TRUE}
 
 ```
 
-```{r pics}
+# Comission on Stroke
 
-library(htmlwidgets)
+Interactive display of maps and data presented in the Lancet Neurology paper: Commission on Stroke: The Wind of Change. This is an interactive display (https://gntem2.github.io/CommissionOnStroke/) of the maps in the paper submitted to Lancet Neurology.
 
-saveWidget(m,file="Figure2.html")
-webshot::webshot("Figure2.html","Figure2.png")
+Click on the images for interactive versions of the maps.
 
-saveWidget(n,file="Figure4a.html")
-webshot::webshot("Figure4a.html","Figure4a.png")
+# [Stroke surveillance, acute services, rehabilitation services and prevention](./worldstrokemap1.html)
 
-saveWidget(q,file="Figure4b.html")
-webshot::webshot("Figure4b.html","Figure4b.png")
+[![Surveillance, acute services, etc](./wsm1.png)](./worldstrokemap1.html)
 
-saveWidget(r,file="Figure4c.html")
-webshot::webshot("Figure4c.html","Figure4c.png")
+# [Stroke prevention](./worldstrokemap2.html)
 
-saveWidget(o,file="Figure5.html")
-webshot::webshot("Figure5.html","Figure5.png")
-
-saveWidget(p,file="Figure7.html")
-webshot::webshot("Figure7.html","Figure7.png")
-
-
-save(TableS1,file="TableS1.Rda")
-save(TableS8,file="TableS8.Rda")
-
-
-
-```
-
-
-
-
-You can also embed plots, for example:
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+[![Prevention strategies](./wsm2.png)](./worldstrokemap2.html)
