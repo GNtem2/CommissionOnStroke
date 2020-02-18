@@ -1,13 +1,11 @@
 ---
 
-title: Commission on Stroke
+title: Lancet Commission on Stroke
 layout: default
 
 ---
 
-# Stuff to show an update has happened
-
-# Commission on Stroke
+# Lancet Commission on Stroke
 
 Interactive display of maps and data presented in the Lancet Neurology
 paper: Commission on Stroke: The Wind of Change.
