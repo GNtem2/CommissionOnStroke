@@ -199,6 +199,22 @@ TableS8 <- left_join(TableS8, select(TableS1, Countries, Prevention), by=c("Coun
 TableS1 <- mutate(TableS1, Countries = fixCountries(Countries))
 TableS8 <- mutate(TableS8, Country = fixCountries(Country))
 
+## ---- LoadDataNew ----
+##############
+#stroke service Figure 2
+
+mapdat <- select(read_xlsx("Data_for_Maps.xlsx", sheet = "Sheet1", na = c("", "N/A")), -starts_with(".."))
+
+mapdat <- mutate(mapdat, Country = fixCountries(Country))
+TableS1 <- select(mapdat, Country, Surveillance, Prevention, `Acute Care`, Rehabilitation, Economy, `No. of Hospitals`)
+TableS1 <- rename(TableS1, Countries = Country, Acute = `Acute Care`)
+
+TableS8 <- select(mapdat, Country, `Overall Score for Primary Prevention`, `Overall Score for Secondary Prevention`, Prevention)
+
+TableS1 <- mutate(TableS1, Countries = fixCountries(Countries))
+TableS8 <- mutate(TableS8, Country = fixCountries(Country))
+
+## ---- LoadDataWorld ----
 
 worldborders.orig <- st_read("TM_WORLD_BORDERS_SIMPL-0.3.shp")
 worldborders <- left_join(worldborders.orig, TableS1, by=c("NAME"="Countries"))
