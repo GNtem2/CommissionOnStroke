@@ -16,16 +16,20 @@ knitr::read_chunk("lancet_interactive_maps.R")
 ```{r HelperFunctions, warning=FALSE, message=FALSE, echo=FALSE, results='hide'}
 
 ```
-```{r LoadData, warning=FALSE, message=FALSE, echo=FALSE, results='hide'}
+```{r LoadDataNew, warning=FALSE, message=FALSE, echo=FALSE, results='hide'}
 
 ```
-```{r Map1, warning=FALSE, message=FALSE, echo=FALSE, results='hide', cache=TRUE}
+
+```{r LoadDataWorld, warning=FALSE, message=FALSE, echo=FALSE, results='hide'}
+```
+
+```{r Map1, warning=FALSE, message=FALSE, echo=FALSE, results='hide', cache=FALSE}
 
 ```
-```{r Map2, warning=FALSE, message=FALSE, echo=FALSE, results='hide', cache=TRUE}
+```{r Map2, warning=FALSE, message=FALSE, echo=FALSE, results='hide', cache=FALSE}
 
 ```
-```{r, SaveMaps, warning=FALSE, message=FALSE, echo=FALSE, results='hide', cache=TRUE}
+```{r, SaveMaps, warning=FALSE, message=FALSE, echo=FALSE, results='hide', cache=FALSE}
 
 ```
 
