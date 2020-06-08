@@ -153,10 +153,10 @@ mkPopup1 <- function(WB){
 
 
 quintileFactors <- function(V) {
-  qq <- c(-0.01, 0.01, c( 0.3, 0.50, 0.75, 1))*100
-  
+  qq <- c(-0.01, 0.0001, c( 0.3, 0.50, 0.75, 1))*100
+
   cut(V, breaks=qq, labels=c("Absent", "Poor", "Acceptable", "Good", "Very good"),
-      right=FALSE,
+      right = FALSE, include.lowest = TRUE,
       ordered_result=TRUE)
 }
 
@@ -203,7 +203,7 @@ TableS8 <- mutate(TableS8, Country = fixCountries(Country))
 ##############
 #stroke service Figure 2
 
-mapdat <- select(read_xlsx("Data_for_Maps.xlsx", sheet = "Sheet1", na = c("", "N/A")), -starts_with(".."))
+mapdat <- select(read_xlsx("Data_for_Maps2.xlsx", sheet = "Incorporating Wales into UK", na = c("", "N/A")), -starts_with(".."))
 
 mapdat <- mutate(mapdat, Country = fixCountries(Country))
 TableS1 <- select(mapdat, Country, Surveillance, Prevention, `Acute Care`, Rehabilitation, Economy, `No. of Hospitals`)
