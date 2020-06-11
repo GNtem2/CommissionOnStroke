@@ -12,14 +12,16 @@ library(htmltools)
 #change name to be consistent with world map
 
 fixCountries <- function(oldcountries) {
-  namematch <- tibble(oldname=c("USA", "Great Britain", "Moldova", "Macedonia", "South Korea","North Korea",
-                                "Laos", "Vietnam","Syria","Iran","Western sub-Saharan Africa","Congo \\(Brazzaville\\)",
-                                "Democratic Republic of the\r\nCongo","C?te d'Ivoire","Tanzania","Libya", "Russian Federation"),
-                      newname=c("United States","United Kingdom","Republic of Moldova","The former Yugoslav Republic of Macedonia",
-                                "Korea, Republic of","Korea, Democratic People's Republic of","Lao People's Democratic Republic",
-                                "Viet Nam","Syrian Arab Republic","Iran (Islamic Republic of)","Western Sahara",
-                                "Congo","Democratic Republic of the Congo","Cote d'Ivoire","United Republic of Tanzania",
-                                "Libyan Arab Jamahiriya", "Russia"))
+  namematch <- tibble(oldname = c("Congo, Dem. Rep.", "Iran", "Korea, Rep.", "Moldova", "North Macedonia",       
+                                "Russian Federation", "United States of America", "Vietnam"),
+                      newname = c("Democratic Republic of the Congo", "Iran (Islamic Republic of)", "Korea, Republic of", "Republic of Moldova",
+                                  "The former Yugoslav Republic of Macedonia", "Russia", "United States", "Viet Nam")
+  )
+                      # newname=c("United States", "United Kingdom","Republic of Moldova","The former Yugoslav Republic of Macedonia",
+                      #           "Korea, Republic of","Korea, Democratic People's Republic of","Lao People's Democratic Republic",
+                      #           "Viet Nam","Syrian Arab Republic","Iran (Islamic Republic of)","Western Sahara",
+                      #           "Congo","Democratic Republic of the Congo","Cote d'Ivoire","United Republic of Tanzania",
+                      #           "Libyan Arab Jamahiriya", "Russia"))
   oc <- tibble(o=oldcountries)
   oc <- left_join(oc, namematch, by=c("o"="oldname"))
   oc <- mutate(oc, newname=ifelse(is.na(newname), o, newname))
@@ -202,8 +204,10 @@ TableS8 <- mutate(TableS8, Country = fixCountries(Country))
 ## ---- LoadDataNew ----
 ##############
 #stroke service Figure 2
-
-mapdat <- select(read_xlsx("Data_for_Maps2.xlsx", sheet = "Incorporating Wales into UK", na = c("", "N/A")), -starts_with(".."))
+# The spreadsheet now has a new set of column names
+mapdat <- read_xlsx("Data_for_Maps2.xlsx", sheet = "Incorporating Wales into UK", na = c("", "N/A"))
+#colnames(mapdat)[[1]] <- "CountryA"
+mapdat <- select(mapdat, -starts_with(".."))
 
 mapdat <- mutate(mapdat, Country = fixCountries(Country))
 TableS1 <- select(mapdat, Country, Surveillance, Prevention, `Acute Care`, Rehabilitation, Economy, `No. of Hospitals`)
@@ -211,8 +215,8 @@ TableS1 <- rename(TableS1, Countries = Country, Acute = `Acute Care`)
 
 TableS8 <- select(mapdat, Country, `Overall Score for Primary Prevention`, `Overall Score for Secondary Prevention`, Prevention)
 
-TableS1 <- mutate(TableS1, Countries = fixCountries(Countries))
-TableS8 <- mutate(TableS8, Country = fixCountries(Country))
+#TableS1 <- mutate(TableS1, Countries = fixCountries(Countries))
+#TableS8 <- mutate(TableS8, Country = fixCountries(Country))
 
 ## ---- LoadDataWorld ----
 
