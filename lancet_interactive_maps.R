@@ -14,12 +14,12 @@ library(htmltools)
 fixCountries <- function(oldcountries) {
   namematch <- tibble(oldname=c("USA", "Great Britain", "Moldova", "Macedonia", "South Korea","North Korea",
                                 "Laos", "Vietnam","Syria","Iran","Western sub-Saharan Africa","Congo \\(Brazzaville\\)",
-                                "Democratic Republic of the\r\nCongo","C?te d'Ivoire","Tanzania","Libya"),
+                                "Democratic Republic of the\r\nCongo","C?te d'Ivoire","Tanzania","Libya", "Russian Federation"),
                       newname=c("United States","United Kingdom","Republic of Moldova","The former Yugoslav Republic of Macedonia",
                                 "Korea, Republic of","Korea, Democratic People's Republic of","Lao People's Democratic Republic",
                                 "Viet Nam","Syrian Arab Republic","Iran (Islamic Republic of)","Western Sahara",
                                 "Congo","Democratic Republic of the Congo","Cote d'Ivoire","United Republic of Tanzania",
-                                "Libyan Arab Jamahiriya"))
+                                "Libyan Arab Jamahiriya", "Russia"))
   oc <- tibble(o=oldcountries)
   oc <- left_join(oc, namematch, by=c("o"="oldname"))
   oc <- mutate(oc, newname=ifelse(is.na(newname), o, newname))
