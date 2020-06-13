@@ -209,7 +209,9 @@ mapdat <- read_xlsx("Data_for_Maps2.xlsx", sheet = "Incorporating Wales into UK"
 #colnames(mapdat)[[1]] <- "CountryA"
 mapdat <- select(mapdat, -starts_with(".."))
 
-mapdat <- mutate(mapdat, Country = fixCountries(Country))
+mapdat <- mutate(mapdat, Country = fixCountries(Country),
+                 Economy=factor(Economy, levels=c("LI", "LMI", "UMI", "HI"), ordered=TRUE)
+                 )
 TableS1 <- select(mapdat, Country, Surveillance, Prevention, `Acute Care`, Rehabilitation, Economy, `No. of Hospitals`)
 TableS1 <- rename(TableS1, Countries = Country, Acute = `Acute Care`)
 
