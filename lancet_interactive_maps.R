@@ -316,7 +316,7 @@ quintileFactors <- function(V) {
   
   
   
-  cut(V, breaks=qq, labels=c("Absent: 0", "Poor: <29", "Acceptable: 30-49", "Good:50-74", "Very good: 75-100"),
+  cut(V, breaks=qq, labels=c("Absent: 0", "Poor: <30", "Acceptable: 30-49", "Good:50-74", "Very good: 75-100"),
       
       right = FALSE, include.lowest = TRUE,
       
