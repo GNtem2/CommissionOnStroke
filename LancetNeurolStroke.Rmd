@@ -7,6 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::read_chunk("lancet_interactive_maps.R")
 ```
 ```{r LoadLibraries, warning=FALSE, message=FALSE, echo=FALSE, results='hide'}
 
@@ -22,7 +23,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```
 
-```{r LoadDataNew, warning=FALSE, message=FALSE, echo=FALSE, results='hide'}
+```{r LoadData, warning=FALSE, message=FALSE, echo=FALSE, results='hide'}
 
 
 

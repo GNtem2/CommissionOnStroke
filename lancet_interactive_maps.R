@@ -292,7 +292,7 @@ mkPopup1 <- function(WB){
   
   wb <- st_set_geometry(WB, NULL)
   
-  g <- gather(select(wb, NAME, Surveillance, Acute, Rehabilitation, Economy,`No. of Hospitals`),
+  g <- gather(select(wb, NAME, Surveillance, `Acute Care`, Rehabilitation, Economy,`No. of Hospitals`),
               
               key="Rowname", value="Score", -NAME)
   
@@ -358,10 +358,27 @@ document.querySelectorAll('.legend').forEach(l => {
 
 ## ---- LoadData ----
 
+# TableS1 has become S2
+
+TableS2 <- readxl::read_xlsx("NewTables/supp_tables.xlsx", sheet="table2")
+TableS2 <- mutate(TableS2, 
+                  Country=fixCountries(Country),
+                  Economy=factor(Economy, levels=c("LI", "LMI", "UMI", "HI"), ordered=TRUE))
+
+# Table S8 has become 4
+TableS4 <- readxl::read_xlsx("NewTables/supp_tables.xlsx", sheet="table4")
+
+Table5b <- readxl::read_xlsx("NewTables/supp_tables.xlsx", sheet="table5b")
+
+TableS4 <- left_join(TableS4, select(TableS2, Country, Prevention), by="Country")
+TableS4 <- select(TableS4, Country, `Overall Score for Primary Prevention`, `Overall Score for Secondary Prevention`, Prevention)
+TableS4 <- mutate(TableS4, country = fixCountries(Country))
+
+## ---- LoadDataOld ----
 ##############
 
 #stroke service Figure 2
-
+function() {
 TableS1<-read_xlsx("acutecareservice.xlsx",sheet = "TableS1")
 
 TableS1<-mutate(TableS1,
@@ -402,7 +419,7 @@ TableS1 <- mutate(TableS1, Countries = fixCountries(Countries))
 
 TableS8 <- mutate(TableS8, Country = fixCountries(Country))
 
-
+}
 
 ## ---- LoadDataNew ----
 
@@ -411,30 +428,30 @@ TableS8 <- mutate(TableS8, Country = fixCountries(Country))
 #stroke service Figure 2
 
 # The spreadsheet now has a new set of column names
-
-mapdat <- read_xlsx("Data_for_Maps2.xlsx", sheet = "Incorporating Wales into UK", na = c("", "N/A"))
-
-#colnames(mapdat)[[1]] <- "CountryA"
-
-mapdat <- select(mapdat, -starts_with(".."))
-
-
-
-mapdat <- mutate(mapdat, Country = fixCountries(Country),
-                 
-                 Economy=factor(Economy, levels=c("LI", "LMI", "UMI", "HI"), ordered=TRUE)
-                 
-)
-
-TableS1 <- select(mapdat, Country, Surveillance, Prevention, `Acute Care`, Rehabilitation, Economy, `No. of Hospitals`)
-
-TableS1 <- rename(TableS1, Countries = Country, Acute = `Acute Care`)
-
-
-
-TableS8 <- select(mapdat, Country, `Overall Score for Primary Prevention`, `Overall Score for Secondary Prevention`, Prevention)
-
-
+# 
+# mapdat <- read_xlsx("Data_for_Maps2.xlsx", sheet = "Incorporating Wales into UK", na = c("", "N/A"))
+# 
+# #colnames(mapdat)[[1]] <- "CountryA"
+# 
+# mapdat <- select(mapdat, -starts_with(".."))
+# 
+# 
+# 
+# mapdat <- mutate(mapdat, Country = fixCountries(Country),
+#                  
+#                  Economy=factor(Economy, levels=c("LI", "LMI", "UMI", "HI"), ordered=TRUE)
+#                  
+# )
+# 
+# TableS1 <- select(mapdat, Country, Surveillance, Prevention, `Acute Care`, Rehabilitation, Economy, `No. of Hospitals`)
+# 
+# TableS1 <- rename(TableS1, Countries = Country, Acute = `Acute Care`)
+# 
+# 
+# 
+# TableS8 <- select(mapdat, Country, `Overall Score for Primary Prevention`, `Overall Score for Secondary Prevention`, Prevention)
+# 
+# 
 
 #TableS1 <- mutate(TableS1, Countries = fixCountries(Countries))
 
@@ -448,7 +465,7 @@ TableS8 <- select(mapdat, Country, `Overall Score for Primary Prevention`, `Over
 
 worldborders.orig <- st_read("TM_WORLD_BORDERS_SIMPL-0.3.shp")
 
-worldborders <- left_join(worldborders.orig, TableS1, by=c("NAME"="Countries"))
+worldborders <- left_join(worldborders.orig, TableS2, by=c("NAME"="Country"))
 
 
 
@@ -456,7 +473,7 @@ worldborders <- mutate(worldborders,
                        
                        Surveillance=quintileFactors(Surveillance),
                        
-                       Acute=quintileFactors(Acute),
+                       `Acute Care`=quintileFactors(`Acute Care`),
                        
                        Rehabilitation=quintileFactors(Rehabilitation)
                        
@@ -476,9 +493,9 @@ economyColours <- colorFactor(rev(scales::hue_pal()(4)), ordered=TRUE,
 
 
 
-worldborders.fig4 <- left_join(worldborders.orig, TableS8, by=c("NAME"="Country"))
+worldborders.fig4 <- left_join(worldborders.orig, TableS4, by=c("NAME"="Country"))
 
-worldborders.fig4 <- left_join(worldborders.fig4, select(TableS1, Countries, Economy), by=c("NAME"="Countries"))
+worldborders.fig4 <- left_join(worldborders.fig4, select(TableS2, Country, Economy), by=c("NAME"="Country"))
 
 
 
@@ -518,13 +535,13 @@ worldstrokemap1 <-
   
   addPolygons(stroke=FALSE, 
               
-              fillColor = ~lancetColours(Acute), 
+              fillColor = ~lancetColours(`Acute Care`), 
               
               fillOpacity = 0.5,
               
               popup=~popup,
               
-              group="Acute") %>%
+              group="Acute Care") %>%
   
   addPolygons(stroke=FALSE, 
               
@@ -558,13 +575,13 @@ worldstrokemap1 <-
   
   addLegend_decreasing(pal=lancetColours, 
                        
-                       values=~Acute, 
+                       values=~`Acute Care`, 
                        
                        na.label = "No data provided", 
                        
                        decreasing = TRUE,
                        
-                       group="Acute") %>% 
+                       group="Acute Care") %>% 
   
   addLegend_decreasing(pal=lancetColours, 
                        
@@ -586,7 +603,7 @@ worldstrokemap1 <-
                        
                        group="Economy") %>% 
   
-  addLayersControl(baseGroups=c("Surveillance","Acute", "Rehabilitation","Economy"),
+  addLayersControl(baseGroups=c("Surveillance","Acute Care", "Rehabilitation","Economy"),
                    
                    position="topleft",
                    
@@ -622,13 +639,13 @@ worldstrokemap1a <-
   
   addPolygons(stroke=FALSE, 
               
-              fillColor = ~lancetColours(Acute), 
+              fillColor = ~lancetColours(`Acute Care`), 
               
               fillOpacity = 0.5,
               
               popup=~popup,
               
-              group="Acute") %>%
+              group="Acute Care") %>%
   
   addPolygons(stroke=FALSE, 
               
@@ -660,7 +677,7 @@ worldstrokemap1a <-
                        
                        group="Surveillance") %>% 
   
-  addLayersControl(baseGroups=c("Surveillance","Acute", "Rehabilitation","Economy"),
+  addLayersControl(baseGroups=c("Surveillance","Acute Care", "Rehabilitation","Economy"),
                    
                    position="topleft",
                    
