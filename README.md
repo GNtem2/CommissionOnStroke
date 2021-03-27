@@ -1,6 +1,6 @@
 # Commisison on Stroke
 
-Interactive display of maps and data presented in the Lancet Neurology paper: Commission on Stroke: The Wind of Change. This is an [interactive display](https://gntem2.github.io/CommissionOnStroke/) of the maps in the paper submitted to Lancet Neurology.
+The World Stroke Organization (WSO)-World Health Organisation (WHO)-Lancet Neurology Commission on Stroke conducted a survey of the status of stroke services in low and middle income countries (LMICs) compared to  high income countries (HICs). This repository contains an interactive display of maps and data from that survey. The material has been submitted to International Journal of Stroke and is titled : THE STATE OF STROKE SERVICES ACROSS THE GLOBE: REPORTS OF THE WORLD STROKE ORGANIZATION- WORLD HEALTH ORGANIZATION SURVEYS [interactive display](https://gntem2.github.io/CommissionOnStroke/) of the maps in the paper submitted to International Journal of Stroke.
 
 Click on the images for interactive versions of the maps.
 
